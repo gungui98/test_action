@@ -61,6 +61,6 @@ jobs:
                   print("Comment posted successfully!")
               else:
                   print("Failed to post comment:", response.text)
-            else:
-                print("Not all notebooks passed the tests. Comment not posted.")
+          else:
+              print("Not all notebooks passed the tests. Comment not posted.")
           EOF
