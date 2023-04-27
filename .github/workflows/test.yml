@@ -1,13 +1,12 @@
 name: Comment on PR when work is done
 on:
-  pull_request:
-    types: [opened, edited]
+  pull_request
 
 jobs:
   comment-on-pr:
     name: Comment on PR
     runs-on: ubuntu-latest
-
+    permissions: write-all
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,7 +24,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python - <<EOF
           import os
@@ -44,13 +43,12 @@ jobs:
                   all_notebooks_passed = False
                   print(f"The notebook {notebook_file} failed the tests.")
                   print(output.stderr.decode("utf-8"))
+                  exit(1)
           
-          if all_notebooks_passed:
-              print("All notebooks passed the tests.")
           EOF
-
-      - name: Comment PR
+      
+      - name: PR comment with reactions
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            All notebooks passed the tests. ! :wave:
+            Great job! All tests passed! :tada:
