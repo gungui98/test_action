@@ -1,12 +1,13 @@
 name: Comment on PR when work is done
 on:
-  pull_request
+  pull_request:
+    types: [opened, edited]
 
 jobs:
   comment-on-pr:
     name: Comment on PR
     runs-on: ubuntu-latest
-
+    permissions: write-all
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,11 +22,16 @@ jobs:
           pip install jupyter nbconvert requests
 
       - name: Check if work is done correctly
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           python - <<EOF
           import os
           import glob
           import subprocess
+          import requests
           import json
 
           notebook_files = glob.glob("*.ipynb")
@@ -47,4 +53,4 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            All notebooks passed the tests. ! :wave:
+            All notebooks passed the tests ! :wave:
