@@ -45,23 +45,11 @@ jobs:
                   print(output.stderr.decode("utf-8"))
                   exit(1)
           
-          if all_notebooks_passed:
-              # Post a comment on the pull request
-              pr_number = os.getenv("PR_NUMBER")
-              repo_name = os.getenv("GITHUB_REPOSITORY")
-              access_token = os.getenv("ACCESS_TOKEN")
-              url = f"https://api.github.com/repos/{repo_name}/issues/{pr_number}/comments"
-              headers = {
-                  "Authorization": f"Bearer {access_token}",
-                  "Accept": "application/vnd.github.v3+json"
-              }
-              message = "Great job! All notebooks passed the tests."
-              data = {"body": message}
-              response = requests.post(url, headers=headers, data=json.dumps(data))
-              if response.status_code == 201:
-                  print("Comment posted successfully!")
-              else:
-                  print("Failed to post comment:", response.text)
-          else:
-              print("Not all notebooks passed the tests. Comment not posted.")
           EOF
+      
+      - name: PR comment with reactions
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Great job! All tests passed! :tada:
+          reactions: eyes, rocket
