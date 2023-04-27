@@ -43,8 +43,8 @@ jobs:
               print("All notebooks passed the tests.")
           EOF
 
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            All notebooks passed the tests. ! :wave:
+      # - name: Comment PR
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     message: |
+      #       All notebooks passed the tests. ! :wave:
