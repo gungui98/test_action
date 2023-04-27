@@ -43,6 +43,7 @@ jobs:
                   all_notebooks_passed = False
                   print(f"The notebook {notebook_file} failed the tests.")
                   print(output.stderr.decode("utf-8"))
+                  return 1
           
           if all_notebooks_passed:
               # Post a comment on the pull request
