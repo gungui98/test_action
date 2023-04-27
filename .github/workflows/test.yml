@@ -52,4 +52,3 @@ jobs:
         with:
           message: |
             Great job! All tests passed! :tada:
-          reactions: eyes, rocket
