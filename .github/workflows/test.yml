@@ -22,16 +22,10 @@ jobs:
           pip install jupyter nbconvert requests
 
       - name: Check if work is done correctly
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
           python - <<EOF
           import os
           import glob
-          import subprocess
-          import requests
           import json
 
           notebook_files = glob.glob("*.ipynb")
