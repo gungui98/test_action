@@ -1,0 +1,64 @@
+name: Comment on PR when work is done
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  comment-on-pr:
+    name: Comment on PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install jupyter nbconvert requests
+
+      - name: Check if work is done correctly
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<EOF
+          import os
+          import glob
+          import subprocess
+          import requests
+          import json
+
+          notebook_files = glob.glob("*.ipynb")
+          all_notebooks_passed = True
+
+          for notebook_file in notebook_files:
+              # Check if the notebook passes the tests
+              output = subprocess.run(["jupyter", "nbconvert", "--to", "html", "--execute", notebook_file], capture_output=True)
+              if output.returncode != 0:
+                  all_notebooks_passed = False
+                  print(f"The notebook {notebook_file} failed the tests.")
+
+          if all_notebooks_passed:
+              # Post a comment on the pull request
+              pr_number = os.getenv("PR_NUMBER")
+              repo_name = os.getenv("GITHUB_REPOSITORY")
+              access_token = os.getenv("GITHUB_TOKEN")
+              url = f"https://api.github.com/repos/{repo_name}/issues/{pr_number}/comments"
+              headers = {
+                  "Authorization": f"Bearer {access_token}",
+                  "Accept": "application/vnd.github.v3+json"
+              }
+              message = "Great job! All notebooks passed the tests."
+              data = {"body": message}
+              response = requests.post(url, headers=headers, data=json.dumps(data))
+              if response.status_code == 201:
+                  print("Comment posted successfully!")
+              else:
+                  print("Failed to post comment:", response.text)
+          EOF
