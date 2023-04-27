@@ -25,6 +25,7 @@ jobs:
           python - <<EOF
           import os
           import glob
+          import subprocess
           import json
 
           notebook_files = glob.glob("*.ipynb")
