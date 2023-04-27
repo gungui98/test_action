@@ -15,7 +15,7 @@ jobs:
         uses: xalvarez/prevent-file-change-action@v1
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          pattern: "**/*.yml"
+          pattern: .*.yml
           trustedAuthors: xalvarez
 
       - name: Set up Python
