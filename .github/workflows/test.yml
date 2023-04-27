@@ -1,7 +1,6 @@
 name: Comment on PR when work is done
 on:
-  pull_request:
-    types: [opened, edited]
+  pull_request
 
 jobs:
   comment-on-pr:
